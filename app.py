@@ -2,12 +2,6 @@ from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
-
-@app.route('/')
-def hello_world():
-    return 'This is the service evaluating and grading graphs.'
-
-
 @app.route("/fix-tree", methods=["POST"])
 def fix_tree():
     data = request.get_json()
@@ -16,8 +10,12 @@ def fix_tree():
         return jsonify({"error": "Invalid JSON"}), 400
 
     graph = data.get("graph")
+    input = data.get("input")
+    student_graph = data.get("student_graph")
 
-    # Evaluating the graph
+    # Solve the task
+    # Compare the solution with the student graph
+    # Calculate the points and write a feedback
 
     return jsonify({"points": 100, "feedback": "Well done!"})
 
