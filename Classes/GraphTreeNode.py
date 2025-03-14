@@ -31,3 +31,43 @@ class GraphTreeNode:
             self._right = node
         else:
             raise TypeError("Right child must be a GraphTreeNode or None")
+
+    @classmethod
+    def from_json(cls, data):
+        if data is None:
+            return None
+
+        if not isinstance(data, dict) or "value" not in data:
+            raise ValueError("Invalid JSON format: Each node must have a 'value' key")
+
+        node = cls._create_node_from_json(data)
+
+        if "left" in data and data["left"] is not None:
+            node.set_left_child(cls.from_json(data["left"]))
+
+        if "right" in data and data["right"] is not None:
+            node.set_right_child(cls.from_json(data["right"]))
+
+        return node
+
+    @classmethod
+    def _create_node_from_json(cls, data):
+        if "color" in data:
+            raise ValueError("GraphTreeNode does not accept a 'color' attribute")
+        return cls(data["value"])
+
+    def to_json(self):
+        data = {"value": self._value}
+        if self._left:
+            data["left"] = self._left.to_json()
+        if self._right:
+            data["right"] = self._right.to_json()
+        return data
+
+    def print_tree(self, level=0, prefix="Root: "):
+        print(" " * (level * 4) + prefix + str(self._value))
+
+        if self._left:
+            self._left.print_tree(level + 1, "L--> ")
+        if self._right:
+            self._right.print_tree(level + 1, "R--> ")
