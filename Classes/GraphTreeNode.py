@@ -1,8 +1,6 @@
 class GraphTreeNode:
     def __init__(self, value, right_child=None, left_child=None):
-        if value is None:
-            raise ValueError("Value cannot be None")
-        self._value = value
+        self.set_value(value)
         self._right = right_child
         self._left = left_child
 
@@ -18,6 +16,10 @@ class GraphTreeNode:
     def set_value(self, value):
         if value is None:
             raise ValueError("Value cannot be None")
+
+        if not isinstance(value, int):
+            raise TypeError("Value must be a numeric type int")
+
         self._value = value
 
     def set_left_child(self, node):
