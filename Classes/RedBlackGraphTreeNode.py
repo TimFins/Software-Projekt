@@ -33,14 +33,14 @@ class RedBlackGraphTreeNode(GraphTreeNode):
         return cls(data["value"], data["color"])
 
     def to_json(self):
-        data = super().to_json()
-        data["color"] = self._color.value
-        return data
+        return {
+            "value": self._value,
+            "color": self._color.value,
+            "left": self._left.to_json() if self._left else None,
+            "right": self._right.to_json() if self._right else None,
+        }
 
     def print_tree(self, level=0, prefix="Root: "):
         print(" " * (level * 4) + prefix + f"{self._value} ({self._color})")
-
-        if self._left:
-            self._left.print_tree(level + 1, "L--> ")
-        if self._right:
-            self._right.print_tree(level + 1, "R--> ")
+        self._print_child(self._left, level, "L--> ")
+        self._print_child(self._right, level, "R--> ")

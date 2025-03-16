@@ -45,36 +45,53 @@ In `app.py`, the `/fix-tree` endpoint now utilizes these JSON functions:
 ### Example JSON request (GraphTreeNode):
 ```json
 {
-  "graph": {
-    "value": 10,
-    "left": {
-      "value": 5
-    },
-    "right": {
-      "value": 15
-    }
-  },
-  "input": null,
-  "student_graph": null
+   "graph":{
+      "value":10,
+      "left":{
+         "value":5,
+         "left":{
+            "value":5,
+            "left":null,
+            "right":null
+         },
+         "right":null
+      },
+      "right":{
+         "value":15,
+         "left":null,
+         "right":null
+      }
+   },
+   "input":null,
+   "student_graph":null
 }
 ```
 
 ### Example JSON request (RedBlackGraphTreeNode):
 ```json
 {
-  "graph": {
-    "value": 10,
-    "color": "black",
-    "left": {
-      "value": 5,
-      "color": "red"
-    },
-    "right": {
-      "value": 15,
-      "color": "red"
-    }
-  },
-  "input": null,
-  "student_graph": null
+   "graph":{
+      "value":10,
+      "color":"black",
+      "left":{
+         "value":5,
+         "color":"red",
+         "left":{
+            "value":5,
+            "color":"red",
+            "left":null,
+            "right":null
+         },
+         "right":null
+      },
+      "right":{
+         "value":15,
+         "color":"red",
+         "left":null,
+         "right":null
+      }
+   },
+   "input":null,
+   "student_graph":null
 }
 ```

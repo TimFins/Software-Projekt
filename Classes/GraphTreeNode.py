@@ -57,17 +57,19 @@ class GraphTreeNode:
         return cls(data["value"])
 
     def to_json(self):
-        data = {"value": self._value}
-        if self._left:
-            data["left"] = self._left.to_json()
-        if self._right:
-            data["right"] = self._right.to_json()
-        return data
+        return {
+            "value": self._value,
+            "left": self._left.to_json() if self._left else None,
+            "right": self._right.to_json() if self._right else None,
+        }
+
+    def _print_child(self, child, level, prefix):
+        if child:
+            child.print_tree(level + 1, prefix)
+        else:
+            print(" " * ((level + 1) * 4) + f"{prefix} null")
 
     def print_tree(self, level=0, prefix="Root: "):
         print(" " * (level * 4) + prefix + str(self._value))
-
-        if self._left:
-            self._left.print_tree(level + 1, "L--> ")
-        if self._right:
-            self._right.print_tree(level + 1, "R--> ")
+        self._print_child(self._left, level, "L--> ")
+        self._print_child(self._right, level, "R--> ")
