@@ -48,10 +48,10 @@ In `app.py`, the `/fix-tree` endpoint now utilizes these JSON functions:
   "graph": {
     "value": 10,
     "left": {
-      "value": 5,
+      "value": 5
     },
     "right": {
-      "value": 15,
+      "value": 15
     }
   },
   "input": null,

@@ -1,8 +1,9 @@
 from Classes.GraphTreeNode import GraphTreeNode
+from Enums.RedBlackTreeColor import RedBlackTreeColor
 
 
 class RedBlackGraphTreeNode(GraphTreeNode):
-    def __init__(self, value, color="red", right_child=None, left_child=None):
+    def __init__(self, value, color=RedBlackTreeColor.RED, right_child=None, left_child=None):
         super().__init__(value, right_child, left_child)
         self.set_color(color)
 
@@ -10,8 +11,15 @@ class RedBlackGraphTreeNode(GraphTreeNode):
         return self._color
 
     def set_color(self, color):
-        if color not in {"red", "black"}:
-            raise ValueError("Color must be either 'red' or 'black'")
+        if isinstance(color, str):
+            try:
+                color = RedBlackTreeColor(color)
+            except ValueError:
+                raise ValueError(f"Invalid color '{color}'. Must be 'red' or 'black'.")
+
+        if not isinstance(color, RedBlackTreeColor):
+            raise TypeError("Color must be an instance of RedBlackTreeColor Enum.")
+
         self._color = color
 
     def __repr__(self):
@@ -26,7 +34,7 @@ class RedBlackGraphTreeNode(GraphTreeNode):
 
     def to_json(self):
         data = super().to_json()
-        data["color"] = self._color
+        data["color"] = self._color.value
         return data
 
     def print_tree(self, level=0, prefix="Root: "):
