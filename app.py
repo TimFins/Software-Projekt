@@ -5,6 +5,9 @@ from evaluation import example_evaluation
 
 app = Flask(__name__)
 
+@app.route("/", methods=["GET"])
+def index():
+    return """<h1>Connection Established</h1><p>The HTTP Server is running. Please note, that in order to actually use this service, you have to send POST requests to the implemented routes.</p><p>This page serves no functional purpose.</p>"""
 
 @app.route("/example-route", methods=["POST"])
 def example_route():
