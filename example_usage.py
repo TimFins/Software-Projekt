@@ -2,7 +2,7 @@
 """
 
 import json
-from binarytrees import BinaryTreeNode
+from binarytrees import BinaryTreeNode, RedBlackTreeNode, RedBlackTreeColor
 
 # Example tree as JSON
 tree_json = """
