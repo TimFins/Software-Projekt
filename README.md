@@ -1,7 +1,7 @@
 # Evaluator Microservice for Binary Search Trees and Red-Black Trees
 
-The goal of this project is to build a Python microservice, which provided detailed feedback to students solving binary search tree and red-black tree exercises.
-Each task such as inserting values in a binary search tree or deleting values in a red-black tree implements a HTTP route.
+The goal of this project is to build a Python microservice, which provides detailed feedback to students solving binary search tree and red-black tree exercises.
+Each task such as inserting values in a binary search tree or deleting values in a red-black tree implements an HTTP route.
 A JSON request contains all the information about the task as well as the student's submission. The task is to grade the submission, provide detailed feedback and send it back as a JSON response.
 
 ## Setup
@@ -35,9 +35,9 @@ To start the HTTP server run the following command in the command line:
 If the `flask` command cannot be located correctly, then you can also try:
 > python -m flask run --debug
 
-Upon success, a HTTP server starts on localhost. You can terminate it using CTRL+C in the terminal.
+Upon success, an HTTP server starts on localhost. You can terminate it using CTRL+C in the terminal.
 
-Since flask usually takes localhost port 5000, you will probably find your HTTP server there. Alternatively, look for the adress in the terminal output. Usually it will look like this:
+Since flask usually takes localhost port 5000, you will probably find your HTTP server there. Alternatively, look for the address in the terminal output. Usually it will look like this:
 > * Running on http://127.0.0.1:5000
 
 ### Send request to server
@@ -50,13 +50,19 @@ You can just use this JSON body as an example:
 {"existing_tree":{"value":10,"left":{"value":5,"left":{"value":6,"left":null,"right":null},"right":null},"right":{"value":15,"left":null,"right":null}},"values":[8],"student_tree":{"value":10,"left":{"value":5,"left":{"value":6,"left":null,"right":null},"right":{"value":8,"left":null,"right":null}},"right":{"value":15,"left":null,"right":null}}}
 ```
 
-#### Example request on Windows
-Assuming Flask uses the default port 5000, you can use this command in Windows Powershell to test the HTTP server.
+#### Example request using cURL
+Assuming Flask uses the default port 5000, you can use this cURL command to test the HTTP server.
+```sh
+curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"existing_tree":{"value":10,"left":{"value":5,"left":{"value":6,"left":null,"right":null},"right":null},"right":{"value":15,"left":null,"right":null}},"values":[8],"student_tree":{"value":10,"left":{"value":5,"left":{"value":6,"left":null,"right":null},"right":{"value":8,"left":null,"right":null}},"right":{"value":15,"left":null,"right":null}}}' http://127.0.0.1:5000/example-route
+```
+
+#### Example request using PowerShell on Windows
+Assuming Flask uses the default port 5000, you can use this command in Windows PowerShell to test the HTTP server.
 ```sh
 Invoke-WebRequest -Uri "http://127.0.0.1:5000/example-route" -ContentType "application/json" -Method POST -Body '{"existing_tree":{"value":10,"left":{"value":5,"left":{"value":6,"left":null,"right":null},"right":null},"right":{"value":15,"left":null,"right":null}},"values":[8],"student_tree":{"value":10,"left":{"value":5,"left":{"value":6,"left":null,"right":null},"right":{"value":8,"left":null,"right":null}},"right":{"value":15,"left":null,"right":null}}}'
 ```
 
-#### Other example request?
+#### Postman/Insomnia?
 
 ## HTTP Routing
 
@@ -70,7 +76,7 @@ Each route requires the following JSON input:
 - The **student_tree** (the submitted solution, **mandatory**).
 - The **existing_tree** (initial state) and/or the **values** (elements to be added or removed, etc.) or **both**, depending on task.
 
-Inside the route's function, the task is programmatically solved using the **BinaryTreeNode** or **RedBlackTreeNode** classes. The student's submission is then **evaluated** against the expected solution, and feedback with an appropriate score is returned.
+Inside the route's function, the task is programmatically solved using the **BinaryTreeNode** or **RedBlackTreeNode** classes. The student's submission is then evaluated against the expected solution, and feedback with an appropriate score is returned.
 
 The request has the following JSON format:
 ```json
@@ -93,7 +99,7 @@ Evaluation functions should ideally be stored in the `evaluation` directory. Cre
 
 ### Response
 
-The response should have a HTTP status code of 200 (OK). The response should include:
+The response should have an HTTP status code of 200 (OK). The response should include:
 - **score** (from 0 to 100)
 - **feedback** as text
 
@@ -154,7 +160,7 @@ In this example the student has correctly created a new node with the value 8 an
 ```
 
 ### Example request for constructing a binary search tree from values
-This could be an example input where the task is create a binary search tree from scratch with the given input `values`.
+This could be an example input where the task is to create a binary search tree from scratch with the given input `values`.
 
 ```json
 {
@@ -181,7 +187,7 @@ This could be an example input where the task is create a binary search tree fro
 ```
 
 ### Example request for fixing a red-black tree
-This could be an example input where the task is fix the provided red-black tree by restoring red-black properties and performing rebalancing.
+This could be an example input where the task is fixing the provided red-black tree by restoring red-black properties and performing rebalancing.
 Since the job is to only fix the tree instead of adding or removing nodes, the `values` field is null.
 ```json
 {
@@ -264,8 +270,8 @@ Note, that the student did not color the root black, violating a red-black tree 
 
 ### Example response for inserting values into a red-black tree
 Assuming that the last example was used as input.
-The root has the wrong color but the rebalancing and insertion was done correctly apart from that.
-Assuming, that this results in a deduction of 10 points and the provided feedback, the response would look like this (with status code 200):
+The root has the wrong color, but the rebalancing and insertion was done correctly apart from that.
+Assuming, that this results in a deduction of 10 points and the given feedback, the response would look like this (with status code 200):
 
 ```json
 {
@@ -303,11 +309,11 @@ The most relevant functions are showcased in the file `example_usage`, to get fa
 | **left_child** _(setter, getter)_  | `BinaryTreeNode` or `None`                         | Left child of the node.                                                                                                                             |
 | **right_child** _(setter, getter)_ | `BinaryTreeNode` or `None`                         | Right child of the node.                                                                                                                            |
 | **parent** _(setter, getter)_      | `BinaryTreeNode` or `None`                         | Parent of the node.                                                                                                                                 |
-| **to_dict()**                      | returns `dict[str, any]`                           | Converts node and subtrees to dictionary, just like the one in the input.                                                                           |
+| **to_dict()**                      | returns `dict[str, any]`                           | Converts node and subtrees to a dictionary, just like the one in the input.                                                                         |
 | **print_tree()**                   |                                                    | Prints formatted structure of node and subtrees to STDOUT.                                                                                          |
 | **generate_tree_image()**          | returns `str`                                      | Generate a base 64 encoded string containing the tree as PNG, which can e.g., be written to a file. The idea is, that it can be used for debugging. |
 | **display_tree_image()**           |                                                    | Generates an image of the tree and displays it in an image viewer. The idea is, that it can be used for debugging.                                  |
-| **hard_copy()**                    | returns `BinaryTreeNode`                           | Creates a deep copy of the node and subtrees. The copy can be modified without changing the original.                                               |
+| **deep_copy()**                    | returns `BinaryTreeNode`                           | Creates a deep copy of the node and subtrees. The copy can be modified without affecting the original.                                              |
 | BinaryTreeNode.**from_dict()**     | accepts `dict[str, any]`, returns `BinaryTreeNode` | Class method, which takes a dictionary as input and converts it to a `BinaryTreeNode` with all its subtrees.                                        |
 
 
@@ -320,9 +326,9 @@ The most relevant functions are showcased in the file `example_usage`, to get fa
 | **left_child** _(setter, getter)_  | `RedBlackTreeNode` or `None`                         | Left child of the node.                                                                                                                             |
 | **right_child** _(setter, getter)_ | `RedBlackTreeNode` or `None`                         | Right child of the node.                                                                                                                            |
 | **parent** _(setter, getter)_      | `RedBlackTreeNode` or `None`                         | Parent of the node.                                                                                                                                 |
-| **to_dict()**                      | returns `dict[str, any]`                             | Converts node and subtrees to dictionary, just like the one in the input.                                                                           |
+| **to_dict()**                      | returns `dict[str, any]`                             | Converts node and subtrees to a dictionary, just like the one in the input.                                                                         |
 | **print_tree()**                   |                                                      | Prints formatted structure of node and subtrees to STDOUT.                                                                                          |
 | **generate_tree_image()**          | returns `str`                                        | Generate a base 64 encoded string containing the tree as PNG, which can e.g., be written to a file. The idea is, that it can be used for debugging. |
 | **display_tree_image()**           |                                                      | Generates an image of the tree and displays it in an image viewer. The idea is, that it can be used for debugging.                                  |
-| **hard_copy()**                    | returns `RedBlackTreeNode`                           | Creates a deep copy of the node and subtrees. The copy can be modified without changing the original.                                               |
+| **deep_copy()**                    | returns `RedBlackTreeNode`                           | Creates a deep copy of the node and subtrees. The copy can be modified without affecting the original.                                              |
 | RedBlackTreeNode.**from_dict()**   | accepts `dict[str, any]`, returns `RedBlackTreeNode` | Class method, which takes a dictionary as input and converts it to a `RedBlackTreeNode` with all its subtrees.                                      |
