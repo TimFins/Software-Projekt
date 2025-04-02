@@ -1,30 +1,39 @@
-# Software-Projekt
+# Evaluator Microservice for Binary Search Trees and Red-Black Trees
 
-## Prerequisites
-### Software
-One requires the programming language [Python](https://www.python.org/downloads/) and the package manager [pip](https://pip.pypa.io/en/stable/installation/).
+The goal of this project is to build a Python microservice, which provided detailed feedback to students solving binary search tree and red-black tree exercises.
+Each task such as inserting values in a binary search tree or deleting values in a red-black tree implements a HTTP route.
+A JSON request contains all the information about the task as well as the student's submission. The task is to grade the submission, provide detailed feedback and send it back as a JSON response.
 
-As long as it is one of the relatively newer ones, the Python version should not really matter. This project was created with Python version 3.11.
+## Setup
+Please set your working directory to the same directory as this file.
 
-### Install packages
+### Prerequisites
+#### Software
+The programming language [Python](https://www.python.org/downloads/) and the package manager [pip](https://pip.pypa.io/en/stable/installation/) (or alternatively [Anaconda](https://www.anaconda.com/download)) is required.
+
+The Python version should not really matter as long as it is a relatively new one. This project was created with Python version 3.11.5.
+
+#### Install packages
 This project requires the following Python packages:
 - Flask (for running the HTTP server)
 - graphviz (for generating PNG images of graphs)
 - Pillow (for opening generated PNG images in file viewer)
 
 The dependencies and exact versions are present in `requirements.txt`
-One can install them directly using pip:
+They can be installed directly using pip:
 > pip install -r requirements.txt
 
 ## Usage
-The file `example_usage.py` can just be run like a regular file.
+The file `example_usage.py` can be run just like a regular Python script.
+The HTTP server has to be started in a different way.
 
 ### Start server
-To start the HTTP server run the following:
-> flask run
+You can use Flask to start the HTTP server. We recommend running in debug mode, because this way the server automatically restarts when the code changes, so that you do not have to restart the server manually.
+To start the HTTP server run the following command in the command line:
+> flask run --debug
 
-If the flask command cannot be located correctly, then you can also try:
-> python -m flask run
+If the `flask` command cannot be located correctly, then you can also try:
+> python -m flask run --debug
 
 Upon success, a HTTP server starts on localhost. You can terminate it using CTRL+C in the terminal.
 
@@ -53,64 +62,51 @@ Invoke-WebRequest -Uri "http://127.0.0.1:5000/example-route" -ContentType "appli
 
 The `app.py` file serves as the main entry point for handling requests in the Flask application. It defines the available endpoints, processes incoming data, and returns a response. You should implement your endpoints as HTTP POST endpoints.
 
+Examples for requests and responses can be seen further below in the document.
+
+### Request
+
 Each route requires the following JSON input:
 - The **student_tree** (the submitted solution, **mandatory**).
-- Depending on task the **existing_tree** (initial state) and/or the **values** (elements to be added or removed, etc.) or **both** or **neither**.
+- The **existing_tree** (initial state) and/or the **values** (elements to be added or removed, etc.) or **both**, depending on task.
 
 Inside the route's function, the task is programmatically solved using the **BinaryTreeNode** or **RedBlackTreeNode** classes. The student's submission is then **evaluated** against the expected solution, and feedback with an appropriate score is returned.
 
-## Classes
-
-These classes provide the foundation for handling trees and evaluating student solutions.
-They offer useful methods.
-
-### Most relevant attributes and methods of BinaryTreeNode class
-
-| Method/Attribute                   | Datatype(s)                                        | Notes                                                                                                                                                        |
-| ---------------------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **value** _(setter, getter)_       | `int`                                              | Value of the node.                                                                                                                                           |
-| **left_child** _(setter, getter)_  | `BinaryTreeNode` or `None`                         | Left child of the node.                                                                                                                                      |
-| **right_child** _(setter, getter)_ | `BinaryTreeNode` or `None`                         | Right child of the node.                                                                                                                                     |
-| **parent** _(setter, getter)_      | `BinaryTreeNode` or `None`                         | Parent of the node.                                                                                                                                          |
-| **to_dict()**                      | returns `dict[str, any]`                           | Converts node and subtrees to dictionary, just like the one in the input.                                                                                    |
-| **print_tree()**                   |                                                    | Prints formatted structure of node and subtrees to STDOUT.                                                                                                   |
-| **generate_tree_image()**          | returns `str`                                      | Generate a base 64 encoded string containing the tree as PNG, which can e.g., be written to a file. The idea is, that one can use this method for debugging. |
-| **display_tree_image()**           |                                                    | Generates an image of the tree and displays it in an image viewer. The idea is, that one can use this method for debugging.                                  |
-| **hard_copy()**                    | returns `BinaryTreeNode`                           | Creates a deep copy of the node and subtrees. The copy can be modified without changing the original.                                                        |
-| BinaryTreeNode.**from_dict()**     | accepts `dict[str, any]`, returns `BinaryTreeNode` | Class method, which takes a dictionary as input and converts it to a `BinaryTreeNode` with all its subtrees.                                                 |
-
-
-### Most relevant attributes and methods of RedBlackTreeNode class
-
-| Method/Attribute                   | Datatype(s)                                          | Notes                                                                                                                                                        |
-| ---------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **value** _(setter, getter)_       | `int`                                                | Value of the node.                                                                                                                                           |
-| **color** _(setter, getter)_       | `RedBlackTreeColor` or `str`                         | Color of the node. Either 'RED' or 'BLACK'. Enum RedBlackTreeColor is used to manage colors.                                                                 |
-| **left_child** _(setter, getter)_  | `RedBlackTreeNode` or `None`                         | Left child of the node.                                                                                                                                      |
-| **right_child** _(setter, getter)_ | `RedBlackTreeNode` or `None`                         | Right child of the node.                                                                                                                                     |
-| **parent** _(setter, getter)_      | `RedBlackTreeNode` or `None`                         | Parent of the node.                                                                                                                                          |
-| **to_dict()**                      | returns `dict[str, any]`                             | Converts node and subtrees to dictionary, just like the one in the input.                                                                                    |
-| **print_tree()**                   |                                                      | Prints formatted structure of node and subtrees to STDOUT.                                                                                                   |
-| **generate_tree_image()**          | returns `str`                                        | Generate a base 64 encoded string containing the tree as PNG, which can e.g., be written to a file. The idea is, that one can use this method for debugging. |
-| **display_tree_image()**           |                                                      | Generates an image of the tree and displays it in an image viewer. The idea is, that one can use this method for debugging.                                  |
-| **hard_copy()**                    | returns `RedBlackTreeNode`                           | Creates a deep copy of the node and subtrees. The copy can be modified without changing the original.                                                        |
-| RedBlackTreeNode.**from_dict()**   | accepts `dict[str, any]`, returns `RedBlackTreeNode` | Class method, which takes a dictionary as input and converts it to a `RedBlackTreeNode` with all its subtrees.                                               |
-
-### Example usage
-The most relevant functions are showcased in the file `example_usage`. There one can get familiar with the functionality.
-
-## JSON Handling in Routes
+The request has the following JSON format:
+```json
+{
+    "existing_tree": ...,
+    "values": ...,
+    "student_tree": ...
+}
+```
 
 As an example, the endpoint `/example-route` in `app.py` was defined to showcase basic functionality. This route does the following:
 - Accepts input
-- Parses the **trees** from JSON using `BinaryTreeNode.from_dict()`.
+- Converts the **trees** from JSON to objects using `BinaryTreeNode.from_dict()`.
 - Does a trivial grading as example.
 - Returns the score and feedback.
 
 ### Evaluation functions
 Evaluation functions should ideally be stored in the `evaluation` directory. Create a new file containing your evaluations. Import it in `evaluation/__init__.py` and then import it in your route. 
 
-### Example JSON request (Inserting values into a binary search tree):
+
+### Response
+
+The response should have a HTTP status code of 200 (OK). The response should include:
+- **score** (from 0 to 100)
+- **feedback** as text
+
+The response has the following JSON format:
+```json
+{
+    "score": ...,
+    "feedback": ...
+}
+```
+
+## Example JSON requests/responses
+### Example request for inserting values into a binary search tree
 This could be an example input where the task is to insert the values in the existing tree.
 In this example the student has correctly created a new node with the value 8 and placed it at the correct location.
 ```json
@@ -157,7 +153,7 @@ In this example the student has correctly created a new node with the value 8 an
 }
 ```
 
-### Example JSON request (Construct binary search tree from values):
+### Example request for constructing a binary search tree from values
 This could be an example input where the task is create a binary search tree from scratch with the given input `values`.
 
 ```json
@@ -184,7 +180,7 @@ This could be an example input where the task is create a binary search tree fro
 }
 ```
 
-### Example JSON request (Fix a red-black tree):
+### Example request for fixing a red-black tree
 This could be an example input where the task is fix the provided red-black tree by restoring red-black properties and performing rebalancing.
 Since the job is to only fix the tree instead of adding or removing nodes, the `values` field is null.
 ```json
@@ -224,3 +220,109 @@ Since the job is to only fix the tree instead of adding or removing nodes, the `
     }
 }
 ```
+
+### Example request for inserting values into a red-black tree
+This could be an example input where the task is to insert values into an already existing red-black tree.
+Note, that the student did not color the root black, violating a red-black tree property.
+```json
+{
+    "existing_tree": {
+        "value": 1,
+        "color": "BLACK",
+        "left": null,
+        "right": {
+            "value": 2,
+            "color": "RED",
+            "left": null,
+            "right": null
+        }
+    },
+    "values": [3, 4],
+    "student_tree": {
+        "value": 2,
+        "color": "RED",
+        "left": {
+            "value": 1,
+            "color": "BLACK",
+            "left": null,
+            "right": null
+        },
+        "right": {
+            "value": 3,
+            "color": "BLACK",
+            "left": null,
+            "right": {
+                "value": 4,
+                "color": "RED",
+                "left": null,
+                "right": null
+            }
+        }
+    }
+}
+```
+
+### Example response for inserting values into a red-black tree
+Assuming that the last example was used as input.
+The root has the wrong color but the rebalancing and insertion was done correctly apart from that.
+Assuming, that this results in a deduction of 10 points and the provided feedback, the response would look like this (with status code 200):
+
+```json
+{
+    "score": 90,
+    "feedback": "Your solution does not fulfill the rule, that the root node in a red-black tree must be black, since the root with the value 2 is colored red in your submission. You likely just forgot to re-color it after correctly balancing. Everything else is correct."
+}
+```
+
+## Classes for working with binary trees
+
+The classes/enums are located in the `binarytrees` package in the `binarytrees/` directory.
+These classes/enums should be used, since they have useful functionality for binary tree evaluation.
+
+### Contents
+| Class/Enum            | Note                                                                                                                                                                         |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **BinaryTreeNode**    | Class representing a node in a binary tree (more information below).                                                                                                         |
+| **RedBlackTreeNode**  | Class representing a node in a red-black tree (more information below).                                                                                                      |
+| **RedBlackTreeColor** | Enum containing the two possible colors in a red-black tree (red and black). Working with an enum should be safer and more convenient compared to handling strings directly. |
+
+### Usage
+The classes/enums are packaged into a Python package. The package can just be imported into the file where it is needed.
+They can be imported with an import statement like this:
+```py
+from binarytrees import BinaryTreeNode, RedBlackTreeNode, RedBlackTreeColor
+```
+
+The most relevant functions are showcased in the file `example_usage`, to get familiar with the functionality.
+
+### Most relevant attributes and methods of BinaryTreeNode class
+
+| Method/Attribute                   | Datatype(s)                                        | Notes                                                                                                                                               |
+| ---------------------------------- | -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **value** _(setter, getter)_       | `int`                                              | Value of the node.                                                                                                                                  |
+| **left_child** _(setter, getter)_  | `BinaryTreeNode` or `None`                         | Left child of the node.                                                                                                                             |
+| **right_child** _(setter, getter)_ | `BinaryTreeNode` or `None`                         | Right child of the node.                                                                                                                            |
+| **parent** _(setter, getter)_      | `BinaryTreeNode` or `None`                         | Parent of the node.                                                                                                                                 |
+| **to_dict()**                      | returns `dict[str, any]`                           | Converts node and subtrees to dictionary, just like the one in the input.                                                                           |
+| **print_tree()**                   |                                                    | Prints formatted structure of node and subtrees to STDOUT.                                                                                          |
+| **generate_tree_image()**          | returns `str`                                      | Generate a base 64 encoded string containing the tree as PNG, which can e.g., be written to a file. The idea is, that it can be used for debugging. |
+| **display_tree_image()**           |                                                    | Generates an image of the tree and displays it in an image viewer. The idea is, that it can be used for debugging.                                  |
+| **hard_copy()**                    | returns `BinaryTreeNode`                           | Creates a deep copy of the node and subtrees. The copy can be modified without changing the original.                                               |
+| BinaryTreeNode.**from_dict()**     | accepts `dict[str, any]`, returns `BinaryTreeNode` | Class method, which takes a dictionary as input and converts it to a `BinaryTreeNode` with all its subtrees.                                        |
+
+
+### Most relevant attributes and methods of RedBlackTreeNode class
+
+| Method/Attribute                   | Datatype(s)                                          | Notes                                                                                                                                               |
+| ---------------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **value** _(setter, getter)_       | `int`                                                | Value of the node.                                                                                                                                  |
+| **color** _(setter, getter)_       | `RedBlackTreeColor` or `str`                         | Color of the node. Either 'RED' or 'BLACK'. Enum RedBlackTreeColor is used to manage colors.                                                        |
+| **left_child** _(setter, getter)_  | `RedBlackTreeNode` or `None`                         | Left child of the node.                                                                                                                             |
+| **right_child** _(setter, getter)_ | `RedBlackTreeNode` or `None`                         | Right child of the node.                                                                                                                            |
+| **parent** _(setter, getter)_      | `RedBlackTreeNode` or `None`                         | Parent of the node.                                                                                                                                 |
+| **to_dict()**                      | returns `dict[str, any]`                             | Converts node and subtrees to dictionary, just like the one in the input.                                                                           |
+| **print_tree()**                   |                                                      | Prints formatted structure of node and subtrees to STDOUT.                                                                                          |
+| **generate_tree_image()**          | returns `str`                                        | Generate a base 64 encoded string containing the tree as PNG, which can e.g., be written to a file. The idea is, that it can be used for debugging. |
+| **display_tree_image()**           |                                                      | Generates an image of the tree and displays it in an image viewer. The idea is, that it can be used for debugging.                                  |
+| **hard_copy()**                    | returns `RedBlackTreeNode`                           | Creates a deep copy of the node and subtrees. The copy can be modified without changing the original.                                               |
+| RedBlackTreeNode.**from_dict()**   | accepts `dict[str, any]`, returns `RedBlackTreeNode` | Class method, which takes a dictionary as input and converts it to a `RedBlackTreeNode` with all its subtrees.                                      |
