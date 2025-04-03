@@ -62,16 +62,28 @@ print(left_child.get_parent())
 
 # Create a copy of the tree, which can then be modified without changing the original tree
 copy_root = root.deep_copy()
-copy_root.set_value(42)
-copy_root.set_left_child(BinaryTreeNode(41))
-copy_root.set_right_child(BinaryTreeNode(43))
+copy_root.get_right_child().set_value(42)
+copy_root.get_right_child().set_right_child(None)
 print("Original tree:")
 root.print_tree()
 print("Copied and modified tree:")
 copy_root.print_tree()
 
-# Display tree as image in separate file viewer instead of in terminal
-root.display_tree_image()
+# Check if root and copy root are equal.
+# The equality operator only compares value (and color in case of red-black trees.)
+print("Root and copy root nodes are equal:")
+print(root == copy_root)
+
+# To also make sure, that not only the nodes, but also the left and right subtrees are equal,
+# use the method is_equal_including_subtrees().
+# Even though the root was unchanged, this comparison returns False,
+# since the right subtree was modified (One node removed and another changed value).
+print("Root and copy root nodes are equal and have the same subtrees:")
+print(root.is_equal_including_subtrees(copy_root))
+
+# Display tree as image in separate image viewer instead of in terminal
+root.display_tree_image("Original Tree")
+copy_root.display_tree_image("Copied & Modified Tree")
 
 # In case you do not want to save the image to a file instead,
 # you can do this after creating a new png file and adjusting the path:

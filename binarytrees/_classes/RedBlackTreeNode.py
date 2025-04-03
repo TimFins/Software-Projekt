@@ -1,21 +1,27 @@
 from __future__ import annotations
 from binarytrees._classes.BinaryTreeNode import BinaryTreeNode
-from binarytrees._enums.RedBlackTreeColor import RedBlackTreeColor, convert_color_enum_to_string
+from binarytrees._enums.RedBlackTreeColor import RedBlackTreeColor
 from binarytrees._visualization.visualize_binary_tree import generate_binary_tree_image
 
 
 class RedBlackTreeNode(BinaryTreeNode):
     """Class representing a node in a red-black tree.
     """
+
     def __init__(self, value: int, color: str = RedBlackTreeColor.RED, left_child: RedBlackTreeNode | None = None, right_child: RedBlackTreeNode | None = None, parent: RedBlackTreeNode | None = None):
         super().__init__(value, left_child, right_child, parent)
         self.set_color(color)
 
     def __repr__(self) -> str:
-        color = convert_color_enum_to_string(self.get_color())
+        color = str(self.get_color())
         return f"RedBlackTreeNode[{str(self.get_value())}, {color}]"
 
-    def get_color(self) -> str | RedBlackTreeColor:
+    def __eq__(self, other: RedBlackTreeNode) -> bool:
+        if type(self) != type(other):
+            return False
+        return self.get_value() == other.get_value() and self.get_color() == other.get_color()
+
+    def get_color(self) -> RedBlackTreeColor:
         return self._color
 
     def set_color(self, color: str | RedBlackTreeColor):
@@ -24,7 +30,7 @@ class RedBlackTreeNode(BinaryTreeNode):
                 color = RedBlackTreeColor(color)
             except ValueError:
                 raise ValueError(
-                    f"Invalid color '{color}'. Must be 'red' or 'black'.")
+                    f"Invalid color '{color}'. Must be 'RED' or 'BLACK'.")
         if not isinstance(color, RedBlackTreeColor):
             raise TypeError(
                 "Color must be an instance of RedBlackTreeColor Enum.")
@@ -39,24 +45,29 @@ class RedBlackTreeNode(BinaryTreeNode):
         }
 
     def print_tree(self, level: int = 0, prefix: str = "Root: "):
-        print(" " * (level * 4) + prefix + f"{self._value} ({self._color})")
+        print(" " * (level * 4) + prefix +
+              f"{self.get_value()} ({str(self.get_color())})")
         self._print_child(self._left, level, "L--> ")
         self._print_child(self._right, level, "R--> ")
-    
-    def generate_tree_image(self) -> str:
-        """Returns a Base64 encoded string containing the PNG image of the tree.
+
+    def generate_tree_image(self, title: str | None = None) -> str:
+        """Returns a Base64 encoded string containing the PNG image of the tree. Optionally add a title to display on the image.
         """
-        return generate_binary_tree_image(self, show_nil_nodes=True)
+        return generate_binary_tree_image(title, self, show_nil_nodes=True)
 
     def deep_copy(self) -> RedBlackTreeNode:
         """Creates and returns a hard copy of the node and all its subnodes.
         The copy can then be modified without changing the original.
         """
-        node_copy = RedBlackTreeNode._from_binary_tree_node(
-            super().deep_copy(), self.get_color())
-        node_copy.set_color(self.get_color())
+        left_child = self.get_left_child().deep_copy() if self.get_left_child() else None
+        right_child = self.get_right_child().deep_copy() if self.get_right_child() else None
+        node_copy = RedBlackTreeNode(
+            self.get_value(), self.get_color(), left_child, right_child)
+        if left_child:
+            left_child.set_parent(node_copy)
+        if right_child:
+            right_child.set_parent(node_copy)
         return node_copy
-
 
     @classmethod
     def from_dict(cls, data: dict[str, any]) -> RedBlackTreeNode | None:
@@ -70,5 +81,20 @@ class RedBlackTreeNode(BinaryTreeNode):
         return cls(data["value"], data["color"])
 
     @classmethod
-    def _from_binary_tree_node(cls, binary_tree_node: BinaryTreeNode, color: str | RedBlackTreeColor = RedBlackTreeColor.BLACK):
-        return cls(binary_tree_node.get_value(), color, binary_tree_node.get_left_child(), binary_tree_node.get_right_child(), binary_tree_node.get_parent())
+    def from_binary_tree_node(cls, binary_tree_node: BinaryTreeNode, color: str | RedBlackTreeColor = RedBlackTreeColor.BLACK) -> RedBlackTreeNode:
+        """You can use this method to convert a regular binary tree into a red-black tree. 
+        The color you pass is the color in which ALL the nodes will be colored. By default they will all be colored black.
+        """
+        # parent = BinaryTreeNode.get_parent()
+        left = binary_tree_node.get_left_child()
+        right = binary_tree_node.get_right_child()
+        new_node = cls(binary_tree_node.get_value(), color)
+        if left is not None:
+            new_left = RedBlackTreeNode.from_binary_tree_node(left, color)
+            new_node.set_left_child(new_left)
+            new_left.set_parent(new_node)
+        if right is not None:
+            new_right = RedBlackTreeNode.from_binary_tree_node(right, color)
+            new_node.set_right_child(new_right)
+            new_right.set_parent(new_node)
+        return new_node

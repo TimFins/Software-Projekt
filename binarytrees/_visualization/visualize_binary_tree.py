@@ -5,7 +5,6 @@ import base64
 from PIL import Image
 from io import BytesIO
 
-from binarytrees._enums.RedBlackTreeColor import convert_color_enum_to_string
 if TYPE_CHECKING:
     from binarytrees._classes.BinaryTreeNode import BinaryTreeNode
     from binarytrees._classes.RedBlackTreeNode import RedBlackTreeNode
@@ -52,7 +51,7 @@ def _draw_subtree(dot: graphviz.Digraph, show_nil_nodes: bool, node: BinaryTreeN
     right = node.get_right_child()
     node_id = parent_id + parent_direction + str(value)
     try:
-        color: str | None = convert_color_enum_to_string(node.get_color())
+        color: str | None = str(node.get_color())
     except:
         color: str | None = None
     if (color):
@@ -71,11 +70,11 @@ def _draw_subtree(dot: graphviz.Digraph, show_nil_nodes: bool, node: BinaryTreeN
                   maxdepth, node_id, ">", depth+1)
 
 
-def generate_binary_tree_image(tree: BinaryTreeNode | RedBlackTreeNode, show_nil_nodes: bool):
+def generate_binary_tree_image(title, tree: BinaryTreeNode | RedBlackTreeNode, show_nil_nodes: bool):
     """Creates an image of the tree and returns it as a base64 encoded string of a pdf.
     """
-    dot: graphviz.Digraph = graphviz.Digraph("Tree")
-    dot.attr("graph", center="True", dpi="300")
+    dot: graphviz.Digraph = graphviz.Digraph()
+    dot.attr("graph", center="True", dpi="300", label=title, labelloc="t")
     treeroot = tree
     _draw_subtree(dot, show_nil_nodes, treeroot,
                   _get_tree_height(treeroot, show_nil_nodes))

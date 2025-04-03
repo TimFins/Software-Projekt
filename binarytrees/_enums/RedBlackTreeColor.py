@@ -7,11 +7,5 @@ class RedBlackTreeColor(Enum):
     RED = "RED"
     BLACK = "BLACK"
 
-
-def convert_color_enum_to_string(color: RedBlackTreeColor | str) -> str:
-    """Converts RedBlackTreeColor to string for e.g., cleaner printing. If argument is already a string, it is not modified.
-    """
-    if isinstance(color, RedBlackTreeColor):
-        return color.value
-    else:
-        return color
+    def __str__(self):
+        return self.value

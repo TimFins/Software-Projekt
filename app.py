@@ -5,9 +5,11 @@ from evaluation import example_evaluation
 
 app = Flask(__name__)
 
+
 @app.route("/", methods=["GET"])
 def index():
     return """<h1>Connection Established</h1><p>The HTTP Server is running. Please note, that in order to actually use this service, you have to send POST requests to the implemented routes.</p><p>This page serves no functional purpose.</p>"""
+
 
 @app.route("/example-route", methods=["POST"])
 def example_route():
@@ -29,13 +31,13 @@ def example_route():
     # (Assuming your task requires an existing tree as input. If not, you can skip it and only parse the student tree.)
     try:
         existing_tree = BinaryTreeNode.from_dict(existing_tree_json_data)
-        #existing_tree = RedBlackTreeNode.from_dict(existing_tree_json_data) # In case it would have been a red-black tree
+        # existing_tree = RedBlackTreeNode.from_dict(existing_tree_json_data) # In case it would have been a red-black tree
     except:
         jsonify({"error": "Existing tree could not be parsed from JSON"}), 400
 
     try:
         student_tree = BinaryTreeNode.from_dict(student_tree_json_data)
-        #student_tree = RedBlackTreeNode.from_dict(student_tree_json_data) # In case it would have been a red-black tree
+        # student_tree = RedBlackTreeNode.from_dict(student_tree_json_data) # In case it would have been a red-black tree
     except:
         jsonify({"error": "Student tree could not be parsed from JSON"}), 400
 
