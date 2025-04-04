@@ -60,6 +60,29 @@ class BinaryTreeNode:
         else:
             raise TypeError(f"Parent must be a {type(self).__name__} or None")
 
+    def is_equal_including_subtrees(self, other: Self) -> bool:
+        if type(self) != type(other):
+            return False
+        if self != other:
+            return False
+        self_left = self.get_left_child()
+        other_left = other.get_left_child()
+        if self_left is None and other_left is None:
+            left_equal = True
+        elif self_left is None or other_left is None:
+            left_equal = False
+        else:
+            left_equal = self_left.is_equal_including_subtrees(other_left)
+        self_right = self.get_right_child()
+        other_right = other.get_right_child()
+        if self_right is None and other_right is None:
+            right_equal = True
+        elif self_right is None or other_right is None:
+            right_equal = False
+        else:
+            right_equal = self_right.is_equal_including_subtrees(other_right)
+        return left_equal and right_equal
+
     def preorder_traverse(self) -> list[Self]:
         traversal = []
 
@@ -92,29 +115,6 @@ class BinaryTreeNode:
                 traversal.append(node)
         _postorder_traverse(self)
         return traversal
-
-    def is_equal_including_subtrees(self, other: Self) -> bool:
-        if type(self) != type(other):
-            return False
-        if self != other:
-            return False
-        self_left = self.get_left_child()
-        other_left = other.get_left_child()
-        if self_left is None and other_left is None:
-            left_equal = True
-        elif self_left is None or other_left is None:
-            left_equal = False
-        else:
-            left_equal = self_left.is_equal_including_subtrees(other_left)
-        self_right = self.get_right_child()
-        other_right = other.get_right_child()
-        if self_right is None and other_right is None:
-            right_equal = True
-        elif self_right is None or other_right is None:
-            right_equal = False
-        else:
-            right_equal = self_right.is_equal_including_subtrees(other_right)
-        return left_equal and right_equal
 
     def to_dict(self) -> dict[str, any]:
         return {
