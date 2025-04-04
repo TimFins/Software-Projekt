@@ -50,10 +50,13 @@ class RedBlackTreeNode(BinaryTreeNode):
         self._print_child(self._left, level, "L--> ")
         self._print_child(self._right, level, "R--> ")
 
-    def generate_tree_image(self, title: str | None = None) -> str:
+    def generate_tree_image(self, title: str | None = None) -> str | None:
         """Returns a Base64 encoded string containing the PNG image of the tree. Optionally add a title to display on the image.
         """
-        return generate_binary_tree_image(title, self, show_nil_nodes=True)
+        try:
+            return generate_binary_tree_image(title, self, show_nil_nodes=True)
+        except Exception as e:
+            raise Exception(str(e))
 
     def deep_copy(self) -> RedBlackTreeNode:
         """Creates and returns a hard copy of the node and all its subnodes.

@@ -70,21 +70,26 @@ def _draw_subtree(dot: graphviz.Digraph, show_nil_nodes: bool, node: BinaryTreeN
                   maxdepth, node_id, ">", depth+1)
 
 
-def generate_binary_tree_image(title, tree: BinaryTreeNode | RedBlackTreeNode, show_nil_nodes: bool):
+def generate_binary_tree_image(title, tree: BinaryTreeNode | RedBlackTreeNode, show_nil_nodes: bool) -> str | None:
     """Creates an image of the tree and returns it as a base64 encoded string of a pdf.
     """
-    dot: graphviz.Digraph = graphviz.Digraph()
-    dot.attr("graph", center="True", dpi="300", label=title, labelloc="t")
-    treeroot = tree
-    _draw_subtree(dot, show_nil_nodes, treeroot,
-                  _get_tree_height(treeroot, show_nil_nodes))
-    dot.format = "png"
-    # Get image as binary
-    tree_binary = dot.pipe()
-    # Encode binary image as Base64
-    return base64.b64encode(tree_binary).decode("utf-8")
+    try:
+        dot: graphviz.Digraph = graphviz.Digraph()
+        dot.attr("graph", center="True", dpi="300", label=title, labelloc="t")
+        treeroot = tree
+        _draw_subtree(dot, show_nil_nodes, treeroot,
+                      _get_tree_height(treeroot, show_nil_nodes))
+        dot.format = "png"
+        # Get image as binary
+        tree_binary = dot.pipe()
+        # Encode binary image as Base64
+        return base64.b64encode(tree_binary).decode("utf-8")
+    except Exception as e:
+        raise e
 
 
-def display_binary_tree_image(b64_image: str):
+def display_binary_tree_image(b64_image: str | None):
+    if not b64_image:
+        return
     img = Image.open(BytesIO(base64.b64decode(b64_image)))
     img.show()

@@ -1,6 +1,7 @@
 from __future__ import annotations
 from binarytrees._visualization.visualize_binary_tree import generate_binary_tree_image, display_binary_tree_image
 from typing import Self
+from sys import stderr
 
 
 class BinaryTreeNode:
@@ -134,18 +135,26 @@ class BinaryTreeNode:
         self._print_child(self._left, level, "L--> ")
         self._print_child(self._right, level, "R--> ")
 
-    def generate_tree_image(self, title: str | None = None) -> str:
+    def generate_tree_image(self, title: str | None = None) -> str | None:
         """Returns a Base64 encoded string containing the PNG image of the tree. Optionally add a title to display on the image.
         """
-        return generate_binary_tree_image(title, self, show_nil_nodes=False)
+        try:
+            return generate_binary_tree_image(title, self, show_nil_nodes=False)
+        except Exception as e:
+            raise Exception(str(e))
 
     def display_tree_image(self, title: str | None = None, b64_encoded_tree_image: None | str = None):
         """Display the image of the tree in an image viewer. Optionally include a title to be displayed. 
         If no image is provided, one is generated automatically. 
         If one is provided, the title argument is ignored, since it already has a title.
         """
-        if b64_encoded_tree_image is None:
-            b64_encoded_tree_image = self.generate_tree_image(title)
+        try:
+            if b64_encoded_tree_image is None:
+                b64_encoded_tree_image = self.generate_tree_image(title)
+        except Exception as e:
+            print("""The image could not be shown. In case the error mentions the Graphviz executable, then please make sure that you have installed Graphviz and configured it correctly on your system. 
+Please consult the following error message:""", file=stderr)
+            print(e, file=stderr)
         display_binary_tree_image(b64_encoded_tree_image)
 
     def deep_copy(self) -> BinaryTreeNode:
