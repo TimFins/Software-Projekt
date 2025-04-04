@@ -2,7 +2,7 @@
 
 The goal of this project is to build a Python microservice, which provides detailed feedback to students solving binary search tree and red-black tree exercises.
 Each task such as inserting values in a binary search tree or deleting values in a red-black tree implements an HTTP route.
-A JSON request contains all the information about the task as well as the student's submission. The task is to grade the submission, provide detailed feedback and send it back as a JSON response.
+A JSON request contains all the information about the task as well as the student's submission. The task is to create the solution, grade the submission, provide detailed feedback and send it back as a JSON response.
 
 ## Setup
 Please set your working directory to the same directory as this file.
@@ -100,12 +100,14 @@ Evaluation functions should ideally be stored in the `evaluation` directory. Cre
 The response should have an HTTP status code of 200 (OK). The response should include:
 - **score** (from 0 to 100)
 - **feedback** as text
+- **solution** the correct solution graph as JSON
 
 The response has the following JSON format:
 ```json
 {
     "score": ...,
-    "feedback": ...
+    "feedback": ...,
+    "solution": ...
 }
 ```
 
@@ -274,7 +276,28 @@ Assuming, that this results in a deduction of 10 points and the given feedback, 
 ```json
 {
     "score": 90,
-    "feedback": "Your solution does not fulfill the rule, that the root node in a red-black tree must be black, since the root with the value 2 is colored red in your submission. You likely just forgot to re-color it after correctly balancing. Everything else is correct."
+    "feedback": "Your solution does not fulfill the rule, that the root node in a red-black tree must be black, since the root with the value 2 is colored red in your submission. You likely just forgot to re-color it after correctly balancing. Everything else is correct.",
+    "solution": {
+        "value": 2,
+        "color": "BLACK",
+        "left": {
+            "value": 1,
+            "color": "BLACK",
+            "left": null,
+            "right": null
+        },
+        "right": {
+            "value": 3,
+            "color": "BLACK",
+            "left": null,
+            "right": {
+                "value": 4,
+                "color": "RED",
+                "left": null,
+                "right": null
+            }
+        }
+    }
 }
 ```
 

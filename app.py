@@ -54,10 +54,10 @@ def example_route():
     # 2. Compare your solution with the student tree
     # 3. Calculate a score and generate feedback text
     # 4. Send response
-    example_score, example_feedback = example_evaluation(
+    example_score, example_feedback, example_solution = example_evaluation(
         existing_tree, values, student_tree)
 
-    return jsonify({"score": example_score, "feedback": example_feedback})
+    return jsonify({"score": example_score, "feedback": example_feedback, "solution": example_solution.to_dict()})
 
 
 if __name__ == "__main__":
