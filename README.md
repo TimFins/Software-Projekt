@@ -62,8 +62,6 @@ Assuming Flask uses the default port 5000, you can use this command in Windows P
 Invoke-WebRequest -Uri "http://127.0.0.1:5000/example-route" -ContentType "application/json" -Method POST -Body '{"existing_tree":{"value":10,"left":{"value":5,"left":{"value":6,"left":null,"right":null},"right":null},"right":{"value":15,"left":null,"right":null}},"values":[8],"student_tree":{"value":10,"left":{"value":5,"left":{"value":6,"left":null,"right":null},"right":{"value":8,"left":null,"right":null}},"right":{"value":15,"left":null,"right":null}}}'
 ```
 
-#### Postman/Insomnia?
-
 ## HTTP Routing
 
 The `app.py` file serves as the main entry point for handling requests in the Flask application. It defines the available endpoints, processes incoming data, and returns a response. You should implement your endpoints as HTTP POST endpoints.
